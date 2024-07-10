@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pubsub-app
+  labels:
+    app: pubsub-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pubsub-app
+  template:
+    metadata:
+      labels:
+        app: pubsub-app
+    spec:
+      containers:
+      - name: pubsub-app
+        image: gcr.io/ica2-425321/pubsub-app:v8
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+          readOnly: true
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/var/secrets/google/key.json"
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: google-cloud-key
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pubsub-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: pubsub-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

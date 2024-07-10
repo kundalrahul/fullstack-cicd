@@ -1,0 +1,11 @@
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:11-jre-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the JAR file
+COPY target/kafka-example-1.0-SNAPSHOT.jar /app/kafka-consumer.jar
+
+# Run the consumer
+CMD ["java", "-cp", "/app/kafka-consumer.jar", "com.example.KafkaConsumerExample"]

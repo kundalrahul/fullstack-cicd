@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-app-deployment
+  namespace: frontend
+  labels:
+    app: react-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-app
+  template:
+    metadata:
+      labels:
+        app: react-app
+    spec:
+      containers:
+      - name: react-app
+        image: gcr.io/ica3-428602/frontend:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: REACT_APP_API_URL
+        - name: DB_HOST
+          value: "34.46.44.88"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
+          value: "root"
+        - name: DB_NAME
+          value: "ica3"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-app
+  namespace: frontend
+spec:
+  type: LoadBalancer
+  selector:
+    app: react-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
