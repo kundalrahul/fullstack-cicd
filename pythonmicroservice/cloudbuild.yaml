@@ -56,7 +56,7 @@ steps:
         "image",
         "deployment/flask-app",
         "flask-app=gcr.io/optimum-task-429215-h2/flask-app-deployment:$SHORT_SHA",
-        "--namespace=backend",
+        "--namespace=default",
       ]
     env:
       - "CLOUDSDK_COMPUTE_ZONE=us-central1"
