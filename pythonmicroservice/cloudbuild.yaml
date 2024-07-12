@@ -75,6 +75,9 @@ steps:
     env:
       - "CLOUDSDK_COMPUTE_ZONE=us-central1"
       - "CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1"
+images:
+  - gcr.io/optimum-task-429215-h2/flask-app:$SHORT_SHA
+  - gcr.io/optimum-task-429215-h2/react-app:$SHORT_SHA
 
 # Define the build logging behavior
 options:
