@@ -16,20 +16,19 @@ spec:
         app: react-app
     spec:
       containers:
-      - name: react-app
-        image: gcr.io/ica3-428602/frontend:v1
-        ports:
-        - containerPort: 80
-        env:
-        - name: REACT_APP_API_URL
-        - name: DB_HOST
-          value: "34.46.44.88"
-        - name: DB_USER
-          value: "root"
-        - name: DB_PASSWORD
-          value: "root"
-        - name: DB_NAME
-          value: "ica3"
+        - name: react-app
+          image: gcr.io/optimum-task-429215-h2/frontend:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: DB_HOST
+              value: "34.123.154.45"
+            - name: DB_USER
+              value: "root"
+            - name: DB_PASSWORD
+              value: "root"
+            - name: DB_NAME
+              value: "ica4"
 
 ---
 apiVersion: v1
