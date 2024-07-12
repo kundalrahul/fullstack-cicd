@@ -16,20 +16,7 @@ spec:
         app: flask-app
     spec:
       containers:
-        - name: cloud-sql-proxy
-          image: gcr.io/cloudsql-docker/gce-proxy:1.19.1
-          command:
-            [
-              "/cloud_sql_proxy",
-              "-instances=optimum-task-429215-h2:us-central1:postgres-instance=tcp:5432",
-              "-credential_file=/secrets/credentials.json",
-            ]
-          volumeMounts:
-            - name: cloudsql-instance-credentials
-              mountPath: /secrets
-              readOnly: true
-
-        - name: flask-app-container
+        - name: flask-app
           image: gcr.io/optimum-task-429215-h2/backend:latest
           ports:
             - containerPort: 5000
@@ -42,10 +29,7 @@ spec:
               value: "root"
             - name: DB_NAME
               value: "ica4"
-      volumes:
-        - name: cloudsql-instance-credentials
-          secret:
-            secretName: cloudsql-instance-credentials
+
 ---
 apiVersion: v1
 kind: Service
