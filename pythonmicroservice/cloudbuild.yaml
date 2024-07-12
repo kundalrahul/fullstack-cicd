@@ -75,3 +75,9 @@ steps:
     env:
       - "CLOUDSDK_COMPUTE_ZONE=us-central1"
       - "CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1"
+
+# Define the logging behavior
+build:
+  options:
+    logging: CLOUD_LOGGING_ONLY
+  serviceAccount: 527333703071-compute@developer.gserviceaccount.com
