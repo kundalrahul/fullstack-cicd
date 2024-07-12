@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-import './App.css';
-import './form.css';
+import "./App.css";
+import "./form.css";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 function App() {
-  const [first_name, setFirstName] = useState('');
-  const [last_name, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
+  const [email, setEmail] = useState("");
 
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`http://34.133.96.104/list_users`);
+        const response = await axios.get(`http://35.193.185.254/list_users`);
         setUsers(response.data);
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error("Error fetching users:", error);
       }
     };
 
@@ -32,18 +32,17 @@ function App() {
     const data = {
       first_name,
       last_name,
-      email
+      email,
     };
 
     try {
-      await axios.post(`http://34.133.96.104/add_user`, data, {
+      await axios.post(`http://35.193.185.254/add_user`, data, {
         headers: {
-          'Content-Type': 'application/json',
-        }
+          "Content-Type": "application/json",
+        },
       });
 
       alert(`User Created Successfully...`);
-
     } catch (error) {
       alert(`User Creation Failed.`);
     }
@@ -83,7 +82,9 @@ function App() {
               required
             />
           </div>
-          <button type="submit" className="submit-button">Add User</button>
+          <button type="submit" className="submit-button">
+            Add User
+          </button>
         </form>
       </div>
       <div className="table-container">
@@ -99,7 +100,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {(users || []).map(user => (
+            {(users || []).map((user) => (
               <tr key={user.id}>
                 <td>{user.id}</td>
                 <td>{user.first_name}</td>
