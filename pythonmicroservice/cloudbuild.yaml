@@ -13,12 +13,12 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/optimum-task-429215-h2/flask-app:$SHORT_SHA"]
 
-  # Apply the Kubernetes namespace configuration
-  - name: "gcr.io/cloud-builders/kubectl"
-    args: ["apply", "-f", "pythonmicroservice/kubernetes/namespace.yaml"]
-    env:
-      - "CLOUDSDK_COMPUTE_ZONE=us-central1"
-      - "CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1"
+  # # Apply the Kubernetes namespace configuration
+  # - name: "gcr.io/cloud-builders/kubectl"
+  #   args: ["apply", "-f", "pythonmicroservice/kubernetes/namespace.yaml"]
+  #   env:
+  #     - "CLOUDSDK_COMPUTE_ZONE=us-central1"
+  #     - "CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1"
 
   # Apply the Flask app deployment
   - name: "gcr.io/cloud-builders/kubectl"
@@ -55,7 +55,7 @@ steps:
         "set",
         "image",
         "deployment/flask-app",
-        "flask-app=gcr.io/optimum-task-429215-h2/flask-app-deployment:$SHORT_SHA",
+        "flask-app=gcr.io/optimum-task-429215-h2/flask-app:$SHORT_SHA",
         "--namespace=default",
       ]
     env:
@@ -69,7 +69,7 @@ steps:
         "set",
         "image",
         "deployment/react-app",
-        "react-app=gcr.io/optimum-task-429215-h2/react-app-deployment:$SHORT_SHA",
+        "react-app=gcr.io/optimum-task-429215-h2/react-app:$SHORT_SHA",
         "--namespace=default",
       ]
     env:
