@@ -1,22 +1,77 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/ica3-428602/backend:v1', './flask-app/backend']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/ica3-428602/frontend:v1', './react-app/frontend']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/ica3-428602/backend:v1']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/ica3-428602/frontend:v1']
-  - name: 'gcr.io/cloud-builders/kubectl'
+  # Build the Flask app Docker image
+  - name: "gcr.io/cloud-builders/docker"
     args:
-      - 'apply'
-      - '-f'
-      - 'kubernetes'
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=autopilet-cluster-1'
+      [
+        "build",
+        "-t",
+        "gcr.io/optimum-task-429215-h2/flask-app:$SHORT_SHA",
+        "./pythonmicroservice/flask-app",
+      ]
 
-images:
-  - 'gcr.io/$PROJECT_ID/backend:v1'
-  - 'gcr.io/$PROJECT_ID/frontend:v1'
-  
+  # Push the Flask app Docker image to Google Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/optimum-task-429215-h2/flask-app:$SHORT_SHA"]
+
+  # Apply the Kubernetes namespace configuration
+  - name: "gcr.io/cloud-builders/kubectl"
+    args: ["apply", "-f", "pythonmicroservice/kubernetes/namespace.yaml"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1"
+      - "CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1"
+
+  # Apply the Flask app deployment
+  - name: "gcr.io/cloud-builders/kubectl"
+    args: ["apply", "-f", "pythonmicroservice/kubernetes/flask-deployment.yaml"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1"
+      - "CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1"
+
+  # Build the React app Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/optimum-task-429215-h2/react-app:$SHORT_SHA",
+        "./pythonmicroservice/react-app",
+      ]
+
+  # Push the React app Docker image to Google Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/optimum-task-429215-h2/react-app:$SHORT_SHA"]
+
+  # Apply the React app deployment
+  - name: "gcr.io/cloud-builders/kubectl"
+    args: ["apply", "-f", "pythonmicroservice/kubernetes/react-deployment.yaml"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1"
+      - "CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1"
+
+  # Update the image for the Flask app deployment
+  - name: "gcr.io/cloud-builders/kubectl"
+    args:
+      [
+        "set",
+        "image",
+        "deployment/flask-app",
+        "flask-app=gcr.io/optimum-task-429215-h2/flask-app:$SHORT_SHA",
+        "--namespace=backend",
+      ]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1"
+      - "CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1"
+
+  # Update the image for the React app deployment
+  - name: "gcr.io/cloud-builders/kubectl"
+    args:
+      [
+        "set",
+        "image",
+        "deployment/react-app",
+        "react-app=gcr.io/optimum-task-429215-h2/react-app:$SHORT_SHA",
+        "--namespace=default",
+      ]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1"
+      - "CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1"
